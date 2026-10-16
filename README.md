@@ -3,7 +3,7 @@
 Real DualSense voice-coil haptics for Castlevania: Belmont's Curse on Steam, as a BepInEx 6 plugin.
 
 * **HD haptics instead of rumble:** the PC version only sends Unity's basic two-motor rumble, which feels weak on a DualSense. The plugin catches that rumble and plays proper waveforms on the controller's left and right haptic actuators: a deep thump for the heavy motor, a sharper buzz for the light one, and an extra click on hits and landings.
-* **Feel the sound effects (v0.3.5):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
+* **Feel the sound effects (v0.3.6):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
 * **Tunable:** strength, frequencies, gains and left/right bleed in the config file.
 
 ## Requirements
@@ -23,7 +23,7 @@ The game's own rumble is muted while the haptics are running and comes back by i
 
 ## Settings
 
-`BepInEx/config/amine.nr.belmonthaptics.cfg` is created on the first run:
+`BepInEx/config/haptics.castlevania.belmontscurse.cfg` is created on the first run:
 
 * `Strength`, `LowMotorHz`, `HighMotorHz`, `LowGain`, `HighGain`, `SideBleed`, `TransientGain`
 * `KeepNativeRumble` to also keep the game's original rumble

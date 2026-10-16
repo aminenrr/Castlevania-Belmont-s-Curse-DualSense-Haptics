@@ -12,8 +12,8 @@ namespace BelmontHaptics
     [BepInPlugin(Guid, "Belmont Haptics", Version)]
     public class Plugin : BasePlugin
     {
-        public const string Guid = "amine.nr.belmonthaptics";
-        public const string Version = "0.3.5";
+        public const string Guid = "haptics.castlevania.belmontscurse";
+        public const string Version = "0.3.6";
         internal static ManualLogSource L;
         internal static HapticEngine Engine;
 

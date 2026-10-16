@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.3.6
+* The config file is now `BepInEx/config/haptics.castlevania.belmontscurse.cfg`. The old `amine.nr.belmonthaptics.cfg` is no longer used and can be deleted.
+
 ## v0.3.5
 * New categories: Abilities (traversal moves you unlock), EnemyFeedback (staggers, glancing and break reactions), Pickups (XP, items, potions, mana, level-ups).
 
