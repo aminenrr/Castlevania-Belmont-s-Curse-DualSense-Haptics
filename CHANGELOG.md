@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.9
+* The log now warns when the DualSense is also connected over Bluetooth. Haptics only work over USB, and a live Bluetooth link makes the controller ignore them, so turn off Bluetooth or unpair the controller.
+* README: Bluetooth tip added to Troubleshooting.
+
 ## v0.3.8
 * DualSense Edge fix: the Edge could connect but stay silent because it was stuck in classic rumble mode. The mod now switches the controller back to native haptics mode when it connects (and keeps it there).
 * New `[Device]` options `EdgeHapticsFix` and `DualSenseHapticsFix` (both on) to turn that off if needed.
