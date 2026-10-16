@@ -5,7 +5,7 @@ Real DualSense voice-coil haptics for Castlevania: Belmont's Curse on Steam, as 
 Also on **[Nexus Mods](https://www.nexusmods.com/castlevaniabelmontscurse/mods/33)**.
 
 * **HD haptics instead of rumble:** the PC version only sends Unity's basic two-motor rumble, which feels weak on a DualSense. The plugin catches that rumble and plays proper waveforms on the controller's left and right haptic actuators: a deep thump for the heavy motor, a sharper buzz for the light one, and an extra click on hits and landings.
-* **Feel the sound effects (v0.3.8):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
+* **Feel the sound effects (v0.3.9):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
 * **Tunable:** strength, frequencies, gains and left/right bleed in the config file.
 
 ## Requirements
@@ -70,6 +70,7 @@ Copy `BelmontHaptics.dll`, `NAudio.Core.dll` and `NAudio.Wasapi.dll` from `bin/R
 
 * Look in `BepInEx/LogOutput.log` for `DualSense haptics connected`. If it says no DualSense audio device was found, check the USB cable.
 * No vibration but the log says connected: unplug anything from the controller's headphone jack.
+* Turn off Bluetooth on the PC (or unpair the controller) while playing over USB. If the controller is still connected over Bluetooth, it keeps using that link and ignores the USB haptics. Since v0.3.9 the log warns about it (`[hid] A DualSense is also connected over Bluetooth`).
 * DualSense Edge: since v0.3.8 the mod switches the Edge back to native haptics mode on its own (look for `[hid] DualSense Edge set to native haptics mode: ok`). If it still stays silent, open and close the PlayStation Accessories app once with the controller plugged in, that also resets it. One Edge user also got it working by turning on **Bass management** (Sound control panel > DualSense Edge > Properties > Enhancements).
 * Too strong or too weak: change `Strength` in the config.
 
