@@ -2,6 +2,8 @@
 
 Real DualSense voice-coil haptics for Castlevania: Belmont's Curse on Steam, as a BepInEx 6 plugin.
 
+Also on **[Nexus Mods](https://www.nexusmods.com/castlevaniabelmontscurse/mods/33)**.
+
 * **HD haptics instead of rumble:** the PC version only sends Unity's basic two-motor rumble, which feels weak on a DualSense. The plugin catches that rumble and plays proper waveforms on the controller's left and right haptic actuators: a deep thump for the heavy motor, a sharper buzz for the light one, and an extra click on hits and landings.
 * **Feel the sound effects (v0.3.7):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
 * **Tunable:** strength, frequencies, gains and left/right bleed in the config file.
@@ -16,7 +18,7 @@ Real DualSense voice-coil haptics for Castlevania: Belmont's Curse on Steam, as 
 ## Install and run
 
 1. Extract BepInEx into the game folder (next to the game's .exe) and start the game once so it can set itself up. The first start takes a while.
-2. Download the latest zip from **Releases** and copy its `BepInEx` folder into the game folder. It merges into `BepInEx/plugins/BelmontHaptics`.
+2. Download the latest zip from **Releases** (or [Nexus Mods](https://www.nexusmods.com/castlevaniabelmontscurse/mods/33)) and copy its `BepInEx` folder into the game folder. It merges into `BepInEx/plugins/BelmontHaptics`.
 3. Plug in the DualSense by USB and start the game. You should feel a short chime when the haptics connect.
 
 The game's own rumble is muted while the haptics are running and comes back by itself if the controller's audio device disappears.
