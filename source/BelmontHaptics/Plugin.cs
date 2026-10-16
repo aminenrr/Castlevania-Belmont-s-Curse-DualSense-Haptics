@@ -13,7 +13,7 @@ namespace BelmontHaptics
     public class Plugin : BasePlugin
     {
         public const string Guid = "haptics.castlevania.belmontscurse";
-        public const string Version = "0.3.8";
+        public const string Version = "0.3.9";
         internal static ManualLogSource L;
         internal static HapticEngine Engine;
 
