@@ -17,7 +17,8 @@ namespace BelmontHaptics
         const ushort DualSensePid = 0x0CE6;
         const ushort EdgePid = 0x0DF2;
 
-        static bool _loggedNone;
+        static bool _loggedNone, _loggedBt;
+        const string BtHidService = "00001124-0000-1000-8000-00805f9b34fb";
 
         /// <summary>Returns how many controllers got the report.</summary>
         public static int RestoreNativeHaptics(bool log)
@@ -36,6 +37,11 @@ namespace BelmontHaptics
                         string path = GetPath(set, ref ifd);
                         if (path == null) continue;
                         string p = path.ToLowerInvariant();
+                        if (log && !_loggedBt && p.Contains(BtHidService) && p.Contains("054c") && (p.Contains("0ce6") || p.Contains("0df2")))
+                        {
+                            _loggedBt = true;
+                            Plugin.L.LogWarning("[hid] A DualSense is also connected over Bluetooth. Haptics only work over USB: turn off Bluetooth or unpair the controller, then replug the USB cable.");
+                        }
                         if (!p.Contains("vid_054c")) continue;
                         bool edge = p.Contains("pid_0df2");
                         if (!edge && !p.Contains("pid_0ce6")) continue;
