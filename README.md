@@ -5,14 +5,14 @@ Real DualSense voice-coil haptics for Castlevania: Belmont's Curse on Steam, as 
 Also on **[Nexus Mods](https://www.nexusmods.com/castlevaniabelmontscurse/mods/33)**.
 
 * **HD haptics instead of rumble:** the PC version only sends Unity's basic two-motor rumble, which feels weak on a DualSense. The plugin catches that rumble and plays proper waveforms on the controller's left and right haptic actuators: a deep thump for the heavy motor, a sharper buzz for the light one, and an extra click on hits and landings.
-* **Feel the sound effects (v0.3.7):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
+* **Feel the sound effects (v0.3.8):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
 * **Tunable:** strength, frequencies, gains and left/right bleed in the config file.
 
 ## Requirements
 
 * Castlevania: Belmont's Curse on Steam (Windows).
 * [BepInEx 6 Bleeding Edge, Unity IL2CPP x64](https://builds.bepinex.dev/projects/bepinex_be), build **be.788** or newer.
-* A DualSense controller connected by **USB cable** (haptics need USB; wireless only works through DSX with DSX+ "BT Audio/Haptics").
+* A DualSense or DualSense Edge controller connected by **USB cable** (haptics need USB; wireless only works through DSX with DSX+ "BT Audio/Haptics").
 * Nothing plugged into the controller's headphone jack. A headset in the jack turns the haptics off.
 
 ## Install and run
@@ -62,6 +62,7 @@ Copy `BelmontHaptics.dll`, `NAudio.Core.dll` and `NAudio.Wasapi.dll` from `bin/R
 ## How it works
 
 * Harmony prefixes on `Gamepad.SetMotorSpeeds` and `DualSenseGamepadHID.SetMotorSpeeds` (plus Pause/Resume/Reset) catch the game's rumble, already scaled by the in-game vibration slider.
+* On connect (and every few seconds) the plugin sends one HID output report that clears the controller's rumble-emulation bits, so a DualSense Edge left in classic rumble mode by another game or app goes back to native audio haptics. Nothing else (lights, triggers, volume) is touched.
 * The waveforms go to the DualSense's USB audio device (Speakers (DualSense Wireless Controller)), channels 3 and 4, which drive the left and right actuators.
 * The FMOD part calls the game's own `fmodstudio.dll` directly. Each new instance of a whitelisted event gets a tiny pass-through DSP on its own channel group that measures that one sound's level on FMOD's mixer thread. Every category turns that level (plus an instant kick when the sound starts) into its own sine at its own frequency and grip, mixed on top of the rumble layer.
 
@@ -69,6 +70,7 @@ Copy `BelmontHaptics.dll`, `NAudio.Core.dll` and `NAudio.Wasapi.dll` from `bin/R
 
 * Look in `BepInEx/LogOutput.log` for `DualSense haptics connected`. If it says no DualSense audio device was found, check the USB cable.
 * No vibration but the log says connected: unplug anything from the controller's headphone jack.
+* DualSense Edge: since v0.3.8 the mod switches the Edge back to native haptics mode on its own (look for `[hid] DualSense Edge set to native haptics mode: ok`). If it still stays silent, open and close the PlayStation Accessories app once with the controller plugged in, that also resets it. One Edge user also got it working by turning on **Bass management** (Sound control panel > DualSense Edge > Properties > Enhancements).
 * Too strong or too weak: change `Strength` in the config.
 
 ## Disclaimer
