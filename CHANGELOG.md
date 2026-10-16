@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.8
+* DualSense Edge fix: the Edge could connect but stay silent because it was stuck in classic rumble mode. The mod now switches the controller back to native haptics mode when it connects (and keeps it there).
+* New `[Device]` options `EdgeHapticsFix` and `DualSenseHapticsFix` (both on) to turn that off if needed.
+
 ## v0.3.7
 * The config now updates itself: when a new version of the mod starts, it rewrites the config with the new defaults and saves the old one as `.cfg.bak`. No more deleting the file by hand.
 * New `[Updates] KeepSettingsOnUpdate` option (off by default) to keep your own tweaks across updates instead.
