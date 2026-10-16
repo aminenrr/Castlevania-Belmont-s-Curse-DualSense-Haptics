@@ -13,7 +13,7 @@ namespace BelmontHaptics
     public class Plugin : BasePlugin
     {
         public const string Guid = "haptics.castlevania.belmontscurse";
-        public const string Version = "0.3.6";
+        public const string Version = "0.3.7";
         internal static ManualLogSource L;
         internal static HapticEngine Engine;
 
@@ -38,9 +38,35 @@ namespace BelmontHaptics
         internal static ConfigEntry<bool> FmodMeterBuses;
         internal static ConfigEntry<float> RumbleGain;
 
+        internal static ConfigEntry<bool> KeepSettings;
+        internal static ConfigEntry<string> ConfigVersion;
+
+        // New versions add sound categories and change defaults, but BepInEx keeps old values.
+        // So unless the user opted out, a config written by another version is backed up and rebuilt.
+        void RefreshConfigOnUpdate()
+        {
+            try
+            {
+                string path = Config.ConfigFilePath;
+                string dir = System.IO.Path.GetDirectoryName(path);
+                string legacy = System.IO.Path.Combine(dir, "amine.nr.belmonthaptics.cfg");
+                if (System.IO.File.Exists(legacy)) { System.IO.File.Delete(legacy); Log.LogInfo("Removed old config amine.nr.belmonthaptics.cfg"); }
+                if (!System.IO.File.Exists(path)) return;
+                string text = System.IO.File.ReadAllText(path);
+                if (text.Contains("ConfigVersion = " + Version)) return;
+                if (System.Text.RegularExpressions.Regex.IsMatch(text, @"KeepSettingsOnUpdate\s*=\s*true", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) return;
+                System.IO.File.Copy(path, path + ".bak", true);
+                System.IO.File.WriteAllText(path, "");
+                Config.Reload();
+                Log.LogInfo("Config was from another version: rebuilt with v" + Version + " defaults (old one saved as .cfg.bak).");
+            }
+            catch (Exception e) { Log.LogWarning("Config refresh skipped: " + e.Message); }
+        }
+
         public override void Load()
         {
             L = Log;
+            RefreshConfigOnUpdate();
             Enabled = Config.Bind("General", "Enabled", true, "Turn the DualSense voice-coil haptics on/off.");
             KeepNativeRumble = Config.Bind("General", "KeepNativeRumble", false, "Also send the game's original weak rumble (normally off so they don't fight).");
             Strength = Config.Bind("General", "Strength", 1.0f, new ConfigDescription("Master haptic strength.", new AcceptableValueRange<float>(0f, 2f)));
@@ -65,6 +91,10 @@ namespace BelmontHaptics
 
             RumbleGain = Config.Bind("General", "RumbleLayer", 0.6f, "Strength of the game's own rumble layer on top of SFX haptics (0 = SFX only).");
             FmodSfx.Bind(Config);
+            KeepSettings = Config.Bind("Updates", "KeepSettingsOnUpdate", false, "When false, each new version of the mod rewrites this file with its new defaults (old file saved as .bak). Set true to keep your own tweaks across updates.");
+            ConfigVersion = Config.Bind("Updates", "ConfigVersion", Version, "Mod version that wrote this file. Do not edit.");
+            if (ConfigVersion.Value != Version) ConfigVersion.Value = Version;
+            Config.Save();
 
             Engine = new HapticEngine();
             Engine.Start();

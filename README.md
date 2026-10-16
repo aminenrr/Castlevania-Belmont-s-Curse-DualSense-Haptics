@@ -3,7 +3,7 @@
 Real DualSense voice-coil haptics for Castlevania: Belmont's Curse on Steam, as a BepInEx 6 plugin.
 
 * **HD haptics instead of rumble:** the PC version only sends Unity's basic two-motor rumble, which feels weak on a DualSense. The plugin catches that rumble and plays proper waveforms on the controller's left and right haptic actuators: a deep thump for the heavy motor, a sharper buzz for the light one, and an extra click on hits and landings.
-* **Feel the sound effects (v0.3.6):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
+* **Feel the sound effects (v0.3.7):** footsteps (alternating left/right), landings, jumps/wall moves/dodges, whip, weapon swings and hits, spells and arcana, unlocked abilities, healing, pickups and level-ups, the save mirror, menu and map navigation, enemy hits and staggers, breakables and taking damage, taken straight from the game's FMOD sound engine. Music, dialog, barks and ambience are never felt.
 * **Tunable:** strength, frequencies, gains and left/right bleed in the config file.
 
 ## Requirements
@@ -31,6 +31,7 @@ The game's own rumble is muted while the haptics are running and comes back by i
 * `RumbleLayer` how much of the game's own rumble plays on top of the SFX haptics (0 = SFX only)
 * `[SFX]` `SfxHaptics`, `SfxStrength`, `AudioDrive` (follow each sound's real loudness), `AudioSensitivity`, `ExcludeEvents`
 * `[SFX.<Category>]` per category (Footsteps, Landing, Movement, Whip, Weapon, Spells, Damage, Healing, Abilities, Pickups, SaveMirror, MenuNavigate, Menu, EnemyHits, EnemyFeedback, Breakables): `Enabled`, `Events` (FMOD event path prefixes), `Gain`, `Hz`, `ReleaseMs`, `Kick`, `Side` (Both/Left/Right/Alternate)
+* `[Updates]` `KeepSettingsOnUpdate`: by default every new version of the mod rewrites the config with its new defaults, so new sounds just work (the old file is saved as `.cfg.bak`). Set it to `true` to keep your own tweaks across updates.
 * `[Discovery]` `FmodDiscoveryLog` turns the v0.3.0 sound-mapping logs back on (off by default)
 
 ## Sound mapping (FmodDiscoveryLog)

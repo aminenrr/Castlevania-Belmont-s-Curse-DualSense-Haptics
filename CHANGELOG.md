@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.7
+* The config now updates itself: when a new version of the mod starts, it rewrites the config with the new defaults and saves the old one as `.cfg.bak`. No more deleting the file by hand.
+* New `[Updates] KeepSettingsOnUpdate` option (off by default) to keep your own tweaks across updates instead.
+* The old `amine.nr.belmonthaptics.cfg` is removed automatically.
+
 ## v0.3.6
 * The config file is now `BepInEx/config/haptics.castlevania.belmontscurse.cfg`. The old `amine.nr.belmonthaptics.cfg` is no longer used and can be deleted.
 
