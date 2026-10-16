@@ -1,0 +1,15 @@
+# build output
+bin/
+obj/
+*.user
+.vs/
+.idea/
+# never commit game / loader files
+interop/
+BepInEx/
+*.bank
+recon/dump.cs
+# release zips go on GitHub Releases, not in git
+*.zip
+LogOutput.log
+BelmontHaptics_fmod.txt
