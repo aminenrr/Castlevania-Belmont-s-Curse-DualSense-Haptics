@@ -13,7 +13,7 @@ namespace BelmontHaptics
     public class Plugin : BasePlugin
     {
         public const string Guid = "haptics.castlevania.belmontscurse";
-        public const string Version = "0.3.7";
+        public const string Version = "0.3.8";
         internal static ManualLogSource L;
         internal static HapticEngine Engine;
 
@@ -37,6 +37,9 @@ namespace BelmontHaptics
         internal static ConfigEntry<bool> FmodDiscoveryOn;
         internal static ConfigEntry<bool> FmodMeterBuses;
         internal static ConfigEntry<float> RumbleGain;
+
+        internal static ConfigEntry<bool> EdgeFix;
+        internal static ConfigEntry<bool> DualSenseFix;
 
         internal static ConfigEntry<bool> KeepSettings;
         internal static ConfigEntry<string> ConfigVersion;
@@ -79,6 +82,8 @@ namespace BelmontHaptics
             TransientThreshold = Config.Bind("Tuning", "TransientThreshold", 0.2f, "How big a jump in rumble counts as a hit.");
             DeviceMatch = Config.Bind("Device", "NameMatch", "Wireless Controller;DualSense", "Semicolon list of audio device name parts used to find the DualSense (USB).");
             LogEvents = Config.Bind("Debug", "LogRumbleEvents", false, "Log each new rumble feedback name once (helps per-event tuning later).");
+            EdgeFix = Config.Bind("Device", "EdgeHapticsFix", true, "DualSense Edge: switch the controller back to native audio haptics (other games/apps can leave it stuck in classic rumble mode, which makes the Edge ignore haptics).");
+            DualSenseFix = Config.Bind("Device", "DualSenseHapticsFix", true, "Same fix for the regular DualSense.");
             StartupChime = Config.Bind("Debug", "StartupChime", true, "Short pulse on the controller when haptics connect.");
 
             AudioHaptics = Config.Bind("Audio", "AudioHaptics", false, "OLD v0.2 loopback mode: feels ALL game audio incl. music/voices. Replaced by FMOD SFX haptics in v0.3.");
