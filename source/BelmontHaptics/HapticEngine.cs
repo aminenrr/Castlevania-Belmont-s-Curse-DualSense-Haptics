@@ -38,8 +38,11 @@ namespace BelmontHaptics
         void Watch()
         {
             bool warned = false;
+            int tick = 0;
             while (_run)
             {
+                // Keep the controller in native haptics mode (Edge can be flipped to rumble mode by the game/other apps).
+                if (Connected && ++tick % 3 == 0) DualSenseHid.RestoreNativeHaptics(false);
                 try
                 {
                     if (!Connected)
@@ -63,6 +66,7 @@ namespace BelmontHaptics
                                      && d.AudioClient.MixFormat.Channels >= 4);
             if (dev == null) return false;
 
+            DualSenseHid.RestoreNativeHaptics(true);
             var mix = dev.AudioClient.MixFormat;
             Plugin.L.LogInfo($"DualSense audio found: {dev.FriendlyName} ({mix.SampleRate} Hz, {mix.Channels} ch, {mix.BitsPerSample} bit, {mix.Encoding})");
             _synth = new HapticSynth(mix.SampleRate, mix.Channels);
