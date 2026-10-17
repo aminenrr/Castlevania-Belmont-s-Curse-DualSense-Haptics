@@ -69,7 +69,7 @@ namespace BelmontHaptics
             DualSenseHid.RestoreNativeHaptics(true);
             var mix = dev.AudioClient.MixFormat;
             Plugin.L.LogInfo($"DualSense audio found: {dev.FriendlyName} ({mix.SampleRate} Hz, {mix.Channels} ch, {mix.BitsPerSample} bit, {mix.Encoding})");
-            _synth = new HapticSynth(mix.SampleRate, mix.Channels);
+            _synth = new HapticSynth(mix.SampleRate, mix.Channels, HapticSynth.ReadMask(mix));
             var o = new WasapiOut(dev, AudioClientShareMode.Shared, true, 15);
             o.Init((IWaveProvider)_synth);
             o.Play();
@@ -129,6 +129,7 @@ namespace BelmontHaptics
     {
         public WaveFormat WaveFormat { get; }
         readonly int _ch;
+        readonly int _iL, _iR; // buffer index of the left/right actuator channels
         readonly float _sr;
         volatile float _tLow, _tHigh;
         volatile bool _paused;
@@ -137,11 +138,55 @@ namespace BelmontHaptics
         float _tr; // transient envelope
         int _chime;
 
-        public HapticSynth(int sampleRate, int channels)
+        const int SPEAKER_BACK_LEFT = 0x10, SPEAKER_BACK_RIGHT = 0x20, SPEAKER_SIDE_LEFT = 0x200, SPEAKER_SIDE_RIGHT = 0x400;
+        const int QuadMask = 0x1 | 0x2 | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+
+        public HapticSynth(int sampleRate, int channels, int deviceMask)
         {
             _sr = sampleRate;
             _ch = channels;
-            WaveFormat = new WaveFormatExtensible(sampleRate, 32, channels);
+            // NAudio's (rate, bits, channels) constructor labels 4 channels FL/FR/FC/LFE. Windows ignores that,
+            // but Wine/PipeWire honour it and mix "centre" into the speaker and drop "LFE". Use the device's own
+            // layout (normally quad) and address the actuators by speaker position, not by index.
+            int mask = (deviceMask != 0 && BitCount(deviceMask) == channels) ? deviceMask : (channels == 4 ? QuadMask : 0);
+            var wf = new WaveFormatExtensible(sampleRate, 32, channels);
+            if (mask != 0) SetMask(wf, mask);
+            WaveFormat = wf;
+            _iL = IndexOf(mask, SPEAKER_BACK_LEFT, SPEAKER_SIDE_LEFT, 2);
+            _iR = IndexOf(mask, SPEAKER_BACK_RIGHT, SPEAKER_SIDE_RIGHT, 3);
+            if (_iL >= channels || _iR >= channels) { _iL = Math.Min(2, channels - 1); _iR = Math.Min(3, channels - 1); }
+            Plugin.L.LogInfo($"Haptic channels: mask 0x{mask:X}, left actuator ch{_iL + 1}, right actuator ch{_iR + 1}");
+        }
+
+        static int BitCount(int m) { int n = 0; while (m != 0) { n += m & 1; m >>= 1; } return n; }
+
+        // position of a speaker bit inside the interleaved frame = number of lower set bits in the mask
+        static int IndexOf(int mask, int bit, int alt, int fallback)
+        {
+            int b = (mask & bit) != 0 ? bit : (mask & alt) != 0 ? alt : 0;
+            if (b == 0) return fallback;
+            return BitCount(mask & (b - 1));
+        }
+
+        static void SetMask(WaveFormatExtensible wf, int mask)
+        {
+            var f = typeof(WaveFormatExtensible).GetField("dwChannelMask", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            if (f != null) f.SetValue(wf, mask);
+            else Plugin.L.LogWarning("Could not set haptic channel mask; using NAudio default.");
+        }
+
+        /// Reads dwChannelMask from a WAVEFORMATEXTENSIBLE (offset 20: 18-byte WAVEFORMATEX + wValidBitsPerSample).
+        public static int ReadMask(WaveFormat wf)
+        {
+            try
+            {
+                if (wf.Encoding != WaveFormatEncoding.Extensible) return 0;
+                using var ms = new System.IO.MemoryStream();
+                using (var w = new System.IO.BinaryWriter(ms, System.Text.Encoding.UTF8, true)) wf.Serialize(w);
+                var bytes = ms.ToArray();
+                return bytes.Length >= 24 ? BitConverter.ToInt32(bytes, 20) : 0;
+            }
+            catch { return 0; }
         }
 
         public void SetTargets(float low, float high)
@@ -236,8 +281,8 @@ namespace BelmontHaptics
 
                 int b = offset + i * _ch;
                 for (int c = 0; c < _ch; c++) buffer[b + c] = 0f;
-                buffer[b + 2] = left;   // ch3 = left actuator
-                buffer[b + 3] = right;  // ch4 = right actuator
+                buffer[b + _iL] = left;   // rear-left speaker = left actuator
+                buffer[b + _iR] = right;  // rear-right speaker = right actuator
             }
             return frames * _ch;
         }
