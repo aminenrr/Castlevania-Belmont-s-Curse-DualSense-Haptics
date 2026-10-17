@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.10
+* Linux (Proton/Wine) fix: haptics played through the controller's speaker instead of the actuators. The haptic stream now uses the DualSense's real quad layout and sends haptics to the rear-left/rear-right channels by speaker position.
+* May also remove the need for Bass management on some Windows setups.
+* The log shows which channels drive the actuators (`Haptic channels: ...`).
+
 ## v0.3.9
 * The log now warns when the DualSense is also connected over Bluetooth. Haptics only work over USB, and a live Bluetooth link makes the controller ignore them, so turn off Bluetooth or unpair the controller.
 * README: Bluetooth tip added to Troubleshooting.
